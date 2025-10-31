@@ -11,13 +11,22 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <Menu>
+        <Menu Grid.ColumnSpan="2">
             <MenuItem x:Name="FileMenu" Header="File">
-                <MenuItem x:Name="Export" Click="Export_Click" />
+                <MenuItem x:Name="SaveMenu" Header="Save" Click="Save_Click" />
+                <MenuItem x:Name="LoadMenu" Header="Load" Click="Load_Click" />
             </MenuItem>
         </Menu>
 
-        <local:MapGrid x:Name="MapGridControl"  Grid.Row="1"></local:MapGrid>
+        <local:Palette Grid.Row="1" 
+                       x:Name="PaletteControl"></local:Palette>
+
+        <local:MapGrid Grid.Row="1" Grid.Column="1" 
+                       x:Name="MapGridControl"></local:MapGrid>
     </Grid>
 </Window>

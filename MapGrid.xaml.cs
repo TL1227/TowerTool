@@ -15,12 +15,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using TowerTool.Dictionaries;
+
 namespace TowerTool
 {
     public partial class MapGrid : UserControl
     {
         bool IsPainting { get; set; }
-        Brush PaintColor {  get; set; }
+        Brush CurrentBrush {  get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
         int TileSize { get; set; }
@@ -32,7 +34,7 @@ namespace TowerTool
             InitializeComponent();
 
             IsPainting = false;
-            PaintColor = Brushes.DarkKhaki;
+            CurrentBrush = CharToBrush.GetBrush('#');
             Rows = 20;
             Columns = 50;
             TileSize = 20;
@@ -55,6 +57,11 @@ namespace TowerTool
             MapGridMain.MouseLeftButtonDown += MapGrid_MouseLeftButtonDown;
             MapGridMain.MouseLeftButtonUp += MapGrid_MouseLeftButtonUp;
             MapGridMain.MouseMove += MapGrid_MouseMove;
+        }
+
+        public void ChangeBrush(char c)
+        {
+            CurrentBrush = CharToBrush.GetBrush(c);
         }
 
         private void MapGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -86,7 +93,7 @@ namespace TowerTool
             if (row >= 0 && row < Rows && col >= 0 && col < Columns)
             {
                 Tile tile = Map[row, col];
-                tile.Rect.Fill = PaintColor;
+                tile.Rect.Fill = CurrentBrush;
                 tile.Character = '#';
             }
         }
@@ -108,6 +115,27 @@ namespace TowerTool
             }
 
             return lines;
+        }
+
+        public void LoadMap(string path)
+        {
+            var lines = File.ReadAllLines(path);
+
+            int rows = Math.Min(lines.Length, Rows);
+
+            for (int row = 0; row < rows; row++)
+            {
+                var line = lines[row];
+                int cols = Math.Min(line.Length, Columns);
+
+                for (int col = 0; col < cols; col++)
+                {
+                    char c = line[col];
+                    Tile tile = Map[row, col];
+                    tile.Character = c;
+                    tile.Rect.Fill = CharToBrush.GetBrush(c);
+                }
+            }
         }
     }
 }

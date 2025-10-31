@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Microsoft.Win32;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,18 +15,45 @@ namespace TowerTool
 {
     public partial class MainWindow : Window
     {
+        public string CurrentFilePath { get; set; }
+        public string MapFileDir { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
+
+            MapFileDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            CurrentFilePath = System.IO.Path.Combine(MapFileDir, "map.txt");
+
+            PaletteControl.BrushChanged += c => MapGridControl.ChangeBrush(c);
         }
 
-        private void Export_Click(object sender, RoutedEventArgs e)
+        private void Save_Click(object sender, RoutedEventArgs e)
         {
-            string path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "map.txt");
+            File.WriteAllLines(CurrentFilePath, MapGridControl.GetMapLines());
+            MessageBox.Show($"Map exported to {CurrentFilePath}");
+        }
 
-            File.WriteAllLines(path, MapGridControl.GetMapLines());
+        private void Load_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog
+            {
+                Title = "Open Map File",
+                Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                InitialDirectory = MapFileDir
+            };
 
-            MessageBox.Show($"Map exported to {path}");
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    MapGridControl.LoadMap(dialog.FileName);
+                }
+                catch (IOException ex)
+                {
+                    MessageBox.Show($"Error reading file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 }
