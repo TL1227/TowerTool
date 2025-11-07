@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,11 +25,14 @@ namespace TowerTool
     {
         bool IsPainting { get; set; }
         Brush CurrentBrush {  get; set; }
+        char CurrentChar {  get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
+        public bool LiveEditing { get; set; }
         int TileSize { get; set; }
-
         public Tile[,] Map {  get; set; }
+
+        public event Action EndPaint;
 
         public MapGrid()
         {
@@ -35,6 +40,7 @@ namespace TowerTool
 
             IsPainting = false;
             CurrentBrush = CharToBrush.GetBrush('#');
+            CurrentChar = '#';
             Rows = 20;
             Columns = 50;
             TileSize = 20;
@@ -62,6 +68,7 @@ namespace TowerTool
         public void ChangeBrush(char c)
         {
             CurrentBrush = CharToBrush.GetBrush(c);
+            CurrentChar = c;
         }
 
         private void MapGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -75,6 +82,11 @@ namespace TowerTool
         {
             IsPainting = false;
             MapGridMain.ReleaseMouseCapture();
+
+            if (LiveEditing)
+            {
+                EndPaint.Invoke();
+            }
         }
 
         private void MapGrid_MouseMove(object sender, MouseEventArgs e)
@@ -94,7 +106,7 @@ namespace TowerTool
             {
                 Tile tile = Map[row, col];
                 tile.Rect.Fill = CurrentBrush;
-                tile.Character = '#';
+                tile.Character = CurrentChar;
             }
         }
 

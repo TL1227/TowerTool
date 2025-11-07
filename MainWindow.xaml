@@ -21,6 +21,9 @@
                 <MenuItem x:Name="SaveMenu" Header="Save" Click="Save_Click" />
                 <MenuItem x:Name="LoadMenu" Header="Load" Click="Load_Click" />
             </MenuItem>
+            <MenuItem x:Name="EditMenu" Header="Edit">
+                <MenuItem x:Name="LiveEditMenu" Header="Live Edit" Click="LiveEdit_Click" />
+            </MenuItem>
         </Menu>
 
         <local:Palette Grid.Row="1" 

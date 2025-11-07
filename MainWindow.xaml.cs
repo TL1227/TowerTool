@@ -26,12 +26,32 @@ namespace TowerTool
             CurrentFilePath = System.IO.Path.Combine(MapFileDir, "map.txt");
 
             PaletteControl.BrushChanged += c => MapGridControl.ChangeBrush(c);
+            MapGridControl.EndPaint += SaveChanges;
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             File.WriteAllLines(CurrentFilePath, MapGridControl.GetMapLines());
             MessageBox.Show($"Map exported to {CurrentFilePath}");
+        }
+
+        private void LiveEdit_Click(object sender, RoutedEventArgs e)
+        {
+            if (LiveEditMenu.IsChecked)
+            {
+                MapGridControl.LiveEditing = false;
+                LiveEditMenu.IsChecked = false;
+            }
+            else
+            {
+                MapGridControl.LiveEditing = true;
+                LiveEditMenu.IsChecked = true;
+            }
+        }
+
+        private void SaveChanges()
+        {
+            File.WriteAllLines(CurrentFilePath, MapGridControl.GetMapLines());
         }
 
         private void Load_Click(object sender, RoutedEventArgs e)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -13,8 +14,7 @@ namespace TowerTool.Dictionaries
         {
             { '#', Brushes.DarkSlateGray }, // wall
             { 'c', Brushes.Goldenrod },     // chest
-            { '.', Brushes.White },         // empty
-            { ' ', Brushes.LightGray },     // floor
+            { ' ', Brushes.White },         // empty
             { 's', Brushes.SteelBlue },     // player start
         };
 

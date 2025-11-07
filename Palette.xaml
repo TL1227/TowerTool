@@ -11,7 +11,7 @@
     <StackPanel Margin="10">
         <RadioButton Tag="#" Background="DarkSlateGray" Foreground="White" Click="RadioButton_Click" IsChecked="True">Wall</RadioButton>
         <RadioButton Tag="c" Background="Goldenrod" Foreground="White" Click="RadioButton_Click">Chest</RadioButton>
-        <RadioButton Tag="." Background="White" Foreground="White" Click="RadioButton_Click">Erase</RadioButton>
+        <RadioButton Tag=" " Background="White" Foreground="White" Click="RadioButton_Click">Erase</RadioButton>
         <RadioButton Tag="s" Background="SteelBlue" Foreground="White" Click="RadioButton_Click">Player</RadioButton>
     </StackPanel>
 </UserControl>

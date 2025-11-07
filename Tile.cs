@@ -14,7 +14,7 @@ namespace TowerTool
         public Rectangle Rect { get; set; }
         public char Character { get; set; }
 
-        private char Default = '.';
+        private char Default = ' ';
 
         public Tile(int size)
         {
