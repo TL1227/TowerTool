@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Runtime.InteropServices;
 
 using TowerTool.Dictionaries;
 
@@ -86,6 +87,7 @@ namespace TowerTool
             if (LiveEditing)
             {
                 EndPaint.Invoke();
+                SwitchToWindow("TowerRpg");
             }
         }
 
@@ -148,6 +150,16 @@ namespace TowerTool
                     tile.Rect.Fill = CharToBrush.GetBrush(c);
                 }
             }
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        public void SwitchToWindow(string processName)
+        {
+            var proc = Process.GetProcessesByName("TowerRpg");
+            var hndl = proc[0].MainWindowHandle;
+            SetForegroundWindow(hndl);
         }
     }
 }
