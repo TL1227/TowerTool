@@ -33,6 +33,11 @@ namespace TowerTool
         int TileSize { get; set; }
         public Tile[,] Map {  get; set; }
 
+        private Brush PlayerLastTileBrush { get; set; }
+        private int PlayerLastX { get; set; }
+        private int PlayerLastZ { get; set; }
+
+
         public event Action EndPaint;
 
         public MapGrid()
@@ -97,6 +102,21 @@ namespace TowerTool
             {
                 PaintAtMouse(e.GetPosition(MapGridMain));
             }
+        }
+
+        public void PaintPlayerLoc(int x, int z)
+        {
+            if (PlayerLastTileBrush != null)
+            {
+                Map[PlayerLastX, PlayerLastZ].Rect.Fill = PlayerLastTileBrush;
+            }
+
+            //store the last tile info so we can reset after player moves 
+            PlayerLastX = x; 
+            PlayerLastZ = z;
+            PlayerLastTileBrush = Map[x, z].Rect.Fill;
+
+            Map[x, z].Rect.Fill = Brushes.RoyalBlue;
         }
 
         private void PaintAtMouse(Point position)

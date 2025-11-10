@@ -17,6 +17,7 @@ namespace TowerTool
     {
         public string CurrentFilePath { get; set; }
         public string MapFileDir { get; set; }
+        private FileSystemWatcher Watcher { get; set; }
 
         public MainWindow()
         {
@@ -41,12 +42,42 @@ namespace TowerTool
             {
                 MapGridControl.LiveEditing = false;
                 LiveEditMenu.IsChecked = false;
+                Watcher.Dispose();
             }
             else
             {
+                Watcher = new("C:\\Users\\lavelle.t\\Desktop", "pos.txt");
+                Watcher.NotifyFilter = NotifyFilters.LastWrite;
+                Watcher.EnableRaisingEvents = true;
+
+                Watcher.Changed += OnFileChange;
+
                 MapGridControl.LiveEditing = true;
                 LiveEditMenu.IsChecked = true;
             }
+        }
+
+        private void OnFileChange(object sender, FileSystemEventArgs e)
+        {
+            Dispatcher.Invoke(async () =>
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    try
+                    {
+                        //we invert the x,z because of how c# and c++ 2D arrays work
+                        var positionFile = File.ReadAllText(e.FullPath);
+                        int x = int.Parse(positionFile.Split(' ')[1]);
+                        int z = int.Parse(positionFile.Split(' ')[0]);
+                        MapGridControl.PaintPlayerLoc(x, z);
+                        break;
+                    }
+                    catch (IOException)
+                    {
+                        await Task.Delay(10); // wait a few ms and retry
+                    }
+                }
+            });
         }
 
         private void SaveChanges()
