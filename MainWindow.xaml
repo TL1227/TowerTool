@@ -26,7 +26,7 @@
             </MenuItem>
             <MenuItem x:Name="GameMenu" Header="Game">
                 <MenuItem x:Name="StartMenu" Header="Start Debug" Click="StartGame_Click" />
-                <MenuItem x:Name="StartReleaseMenu" Header="Start (Release)" Click="StartGame_Click" />
+                <MenuItem x:Name="StartReleaseMenu" Header="Start (Release)" Click="StartGameRelease_Click" />
                 <MenuItem x:Name="StartLiveEditMenu" Header="Start Live Edit (Debug)" Click="StartGameLiveEdit_Click" />
             </MenuItem>
         </Menu>

@@ -121,7 +121,7 @@ namespace TowerTool
 
         private void StartGameRelease_Click(object sender, RoutedEventArgs e)
         {
-            var startInfo = new ProcessStartInfo(TowerGameDebugExe.FullName);
+            var startInfo = new ProcessStartInfo(TowerGameReleaseExe.FullName);
             startInfo.WorkingDirectory = TowerGameDir.FullName;
             Process.Start(startInfo);
         }
