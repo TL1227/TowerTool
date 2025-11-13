@@ -19,11 +19,13 @@ namespace TowerTool
         public DirectoryInfo DataDir { get; set; }
         private FileSystemWatcher Watcher { get; set; }
 
+
         public MainWindow()
         {
             InitializeComponent();
 
             DataDir = new("..\\..\\..\\..\\TowerRpg\\data");
+
             PaletteControl.BrushChanged += c => MapGridControl.ChangeBrush(c);
             MapGridControl.EndPaint += SaveCurrentFile;
         }
@@ -110,6 +112,7 @@ namespace TowerTool
 
         private void Load_Click(object sender, RoutedEventArgs e)
         {
+
             var dialog = new OpenFileDialog
             {
                 Title = "Open Map File",
