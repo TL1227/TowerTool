@@ -16,24 +16,47 @@ namespace TowerTool
     public partial class MainWindow : Window
     {
         public string CurrentFilePath { get; set; }
-        public string MapFileDir { get; set; }
+        public DirectoryInfo DataDir { get; set; }
         private FileSystemWatcher Watcher { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
 
-            MapFileDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            CurrentFilePath = System.IO.Path.Combine(MapFileDir, "map.txt");
-
+            DataDir = new("..\\..\\..\\..\\TowerRpg\\data");
             PaletteControl.BrushChanged += c => MapGridControl.ChangeBrush(c);
-            MapGridControl.EndPaint += SaveChanges;
+            MapGridControl.EndPaint += SaveCurrentFile;
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            File.WriteAllLines(CurrentFilePath, MapGridControl.GetMapLines());
-            MessageBox.Show($"Map exported to {CurrentFilePath}");
+            if (CurrentFilePath == null)
+            {
+                var dialog = new SaveFileDialog()
+                {
+                    Title = "Save New Map File",
+                    Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                    InitialDirectory = DataDir.FullName
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    try
+                    {
+                        CurrentFilePath = dialog.FileName;
+                        SaveCurrentFile();
+                    }
+                    catch (IOException ex)
+                    {
+                        MessageBox.Show($"Error saving file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                SaveCurrentFile();
+                MessageBox.Show($"Saved to {CurrentFilePath}");
+            }
         }
 
         private void LiveEdit_Click(object sender, RoutedEventArgs e)
@@ -46,7 +69,7 @@ namespace TowerTool
             }
             else
             {
-                Watcher = new("C:\\Users\\lavelle.t\\Desktop", "pos.txt");
+                Watcher = new(DataDir.FullName, "pos.txt");
                 Watcher.NotifyFilter = NotifyFilters.LastWrite;
                 Watcher.EnableRaisingEvents = true;
 
@@ -80,7 +103,7 @@ namespace TowerTool
             });
         }
 
-        private void SaveChanges()
+        private void SaveCurrentFile()
         {
             File.WriteAllLines(CurrentFilePath, MapGridControl.GetMapLines());
         }
@@ -91,7 +114,7 @@ namespace TowerTool
             {
                 Title = "Open Map File",
                 Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
-                InitialDirectory = MapFileDir
+                InitialDirectory = DataDir.FullName
             };
 
             if (dialog.ShowDialog() == true)
@@ -99,6 +122,7 @@ namespace TowerTool
                 try
                 {
                     MapGridControl.LoadMap(dialog.FileName);
+                    CurrentFilePath = dialog.FileName;
                 }
                 catch (IOException ex)
                 {
