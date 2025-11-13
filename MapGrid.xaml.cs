@@ -47,8 +47,8 @@ namespace TowerTool
             IsPainting = false;
             CurrentBrush = CharToBrush.GetBrush('#');
             CurrentChar = '#';
-            Rows = 20;
-            Columns = 50;
+            Rows = 100;
+            Columns = 100;
             TileSize = 20;
             Map = new Tile[Rows, Columns];
 

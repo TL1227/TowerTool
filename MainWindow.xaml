@@ -24,6 +24,11 @@
             <MenuItem x:Name="EditMenu" Header="Edit">
                 <MenuItem x:Name="LiveEditMenu" Header="Live Edit" Click="LiveEdit_Click" />
             </MenuItem>
+            <MenuItem x:Name="GameMenu" Header="Game">
+                <MenuItem x:Name="StartMenu" Header="Start Debug" Click="StartGame_Click" />
+                <MenuItem x:Name="StartReleaseMenu" Header="Start (Release)" Click="StartGame_Click" />
+                <MenuItem x:Name="StartLiveEditMenu" Header="Start Live Edit (Debug)" Click="StartGameLiveEdit_Click" />
+            </MenuItem>
         </Menu>
 
         <local:Palette Grid.Row="1" 

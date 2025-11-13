@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -16,7 +17,10 @@ namespace TowerTool
     public partial class MainWindow : Window
     {
         public string CurrentFilePath { get; set; }
+        public DirectoryInfo TowerGameDir { get; set; }
         public DirectoryInfo DataDir { get; set; }
+        public FileInfo TowerGameDebugExe { get; set; }
+        public FileInfo TowerGameReleaseExe { get; set; }
         private FileSystemWatcher Watcher { get; set; }
 
 
@@ -24,12 +28,16 @@ namespace TowerTool
         {
             InitializeComponent();
 
-            DataDir = new("..\\..\\..\\..\\TowerRpg\\data");
+            TowerGameDir = new("..\\..\\..\\..\\TowerRpg");
+            DataDir = new($"{TowerGameDir.FullName}\\data");
+            TowerGameDebugExe = new($"{TowerGameDir.FullName}\\x64\\Debug\\TowerRpg.exe");
+            TowerGameReleaseExe = new($"{TowerGameDir.FullName}\\x64\\Release\\TowerRpg.exe");
 
             PaletteControl.BrushChanged += c => MapGridControl.ChangeBrush(c);
             MapGridControl.EndPaint += SaveCurrentFile;
         }
 
+        #region Menu Item
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentFilePath == null)
@@ -81,7 +89,62 @@ namespace TowerTool
                 LiveEditMenu.IsChecked = true;
             }
         }
+        private void Load_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog
+            {
+                Title = "Open Map File",
+                Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                InitialDirectory = DataDir.FullName
+            };
 
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    MapGridControl.LoadMap(dialog.FileName);
+                    CurrentFilePath = dialog.FileName;
+                }
+                catch (IOException ex)
+                {
+                    MessageBox.Show($"Error reading file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void StartGame_Click(object sender, RoutedEventArgs e)
+        {
+            var startInfo = new ProcessStartInfo(TowerGameDebugExe.FullName);
+            startInfo.WorkingDirectory = TowerGameDir.FullName;
+            Process.Start(startInfo);
+        }
+
+        private void StartGameRelease_Click(object sender, RoutedEventArgs e)
+        {
+            var startInfo = new ProcessStartInfo(TowerGameDebugExe.FullName);
+            startInfo.WorkingDirectory = TowerGameDir.FullName;
+            Process.Start(startInfo);
+        }
+
+        private void StartGameLiveEdit_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentFilePath == null)
+            {
+                MessageBox.Show("No map file currently loaded");
+                return;
+            }
+            var startInfo = new ProcessStartInfo(TowerGameDebugExe.FullName);
+
+            startInfo.WorkingDirectory = TowerGameDir.FullName;
+            startInfo.ArgumentList.Add("--live-edit");
+            startInfo.ArgumentList.Add("--load-map");
+            startInfo.ArgumentList.Add(CurrentFilePath);
+
+            Process.Start(startInfo);
+        }
+        #endregion
+
+        #region FileIO
         private void OnFileChange(object sender, FileSystemEventArgs e)
         {
             Dispatcher.Invoke(async () =>
@@ -109,29 +172,6 @@ namespace TowerTool
         {
             File.WriteAllLines(CurrentFilePath, MapGridControl.GetMapLines());
         }
-
-        private void Load_Click(object sender, RoutedEventArgs e)
-        {
-
-            var dialog = new OpenFileDialog
-            {
-                Title = "Open Map File",
-                Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
-                InitialDirectory = DataDir.FullName
-            };
-
-            if (dialog.ShowDialog() == true)
-            {
-                try
-                {
-                    MapGridControl.LoadMap(dialog.FileName);
-                    CurrentFilePath = dialog.FileName;
-                }
-                catch (IOException ex)
-                {
-                    MessageBox.Show($"Error reading file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
+        #endregion
     }
 }
