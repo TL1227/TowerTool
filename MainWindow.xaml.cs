@@ -16,15 +16,15 @@ namespace TowerTool
     public partial class MainWindow : Window
     {
         public string CurrentFilePath { get; set; }
-        public string MapFileDir { get; set; }
         private FileSystemWatcher Watcher { get; set; }
+
+        private string DataDir = new("..\\..\\..\\..\\TowerRPG\\data");
 
         public MainWindow()
         {
             InitializeComponent();
 
-            MapFileDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            CurrentFilePath = System.IO.Path.Combine(MapFileDir, "map.txt");
+            CurrentFilePath = $"{DataDir}\\map.txt";
 
             PaletteControl.BrushChanged += c => MapGridControl.ChangeBrush(c);
             MapGridControl.EndPaint += SaveChanges;
@@ -46,7 +46,7 @@ namespace TowerTool
             }
             else
             {
-                Watcher = new("C:\\Users\\lavelle.t\\Desktop", "pos.txt");
+                Watcher = new(DataDir, "pos.txt");
                 Watcher.NotifyFilter = NotifyFilters.LastWrite;
                 Watcher.EnableRaisingEvents = true;
 
@@ -87,11 +87,12 @@ namespace TowerTool
 
         private void Load_Click(object sender, RoutedEventArgs e)
         {
+
             var dialog = new OpenFileDialog
             {
                 Title = "Open Map File",
-                Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
-                InitialDirectory = MapFileDir
+                //Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                InitialDirectory = System.IO.Path.GetFullPath(DataDir)
             };
 
             if (dialog.ShowDialog() == true)
