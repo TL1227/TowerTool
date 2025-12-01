@@ -178,8 +178,11 @@ namespace TowerTool
         public void SwitchToWindow(string processName)
         {
             var proc = Process.GetProcessesByName("TowerRpg");
-            var hndl = proc[0].MainWindowHandle;
-            SetForegroundWindow(hndl);
+            if (proc.Length != 0)
+            {
+                var hndl = proc[0].MainWindowHandle;
+                SetForegroundWindow(hndl);
+            }
         }
     }
 }
