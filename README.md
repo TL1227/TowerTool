@@ -1,7 +1,7 @@
 ﻿# Tower Tool
-Everything you need to craft the perfect map.
+<img src="README/TowerTool.png" alt="drawing" width="600"/>  
 
-<img src="README/TowerTool.png" alt="drawing" width="600"/>
+Everything you need to craft the perfect map for [TowerRPG](https://github.com/TL1227/TowerRPG)
 
 ## Features
 - Map editor built using WPF
