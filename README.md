@@ -39,3 +39,16 @@ s               #
 
 ```
 _This is the file shown in the screenshot above_
+
+## Building
+TowerTool is built using dotnet 8.0
+You should be able to build the app just by opening it up in Visual Studio and running it.  
+If you want to use the live editing functions as well as launching TowerRPG then you need to make sure the two project folders are in the same place.  
+This is so the TowerTool can reach into the TowerRPG's data directory and check the player position on the map.
+
+Example:
+```
+-MyRepos
+  -TowerTool
+  -TowerRPG
+```
